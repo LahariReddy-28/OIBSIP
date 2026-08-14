@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Issued Books - Admin</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f7fb;
+
+            color: #333;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        header {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1976d2,
+                    #0d47a1
+                );
+
+            color: white;
+
+            padding: 28px 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                0 4px 12px
+                rgba(0, 0, 0, 0.15);
+        }
+
+
+        .logo-section {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .logo {
+
+            width: 52px;
+
+            height: 52px;
+
+            background: white;
+
+            color: #1976d2;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 27px;
+        }
+
+
+        header h1 {
+
+            margin: 0;
+
+            font-size: 28px;
+        }
+
+
+        header p {
+
+            margin: 5px 0 0;
+
+            opacity: 0.9;
+        }
+
+
+        .admin-badge {
+
+            background:
+                rgba(255,255,255,0.18);
+
+            padding: 10px 18px;
+
+            border-radius: 20px;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           CONTAINER
+        ===================================================== */
+
+        .container {
+
+            width: 92%;
+
+            max-width: 1250px;
+
+            margin: 35px auto;
+        }
+
+
+        /* =====================================================
+           TITLE
+        ===================================================== */
+
+        .page-title {
+
+            background: white;
+
+            padding: 26px;
+
+            border-radius: 14px;
+
+            margin-bottom: 25px;
+
+            border-left:
+                5px solid #1976d2;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.08);
+        }
+
+
+        .page-title h2 {
+
+            margin: 0 0 8px;
+
+            color: #1976d2;
+
+            font-size: 25px;
+        }
+
+
+        .page-title p {
+
+            margin: 0;
+
+            color: #666;
+        }
+
+
+        /* =====================================================
+           STATISTICS
+        ===================================================== */
+
+        .stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 20px;
+
+            margin-bottom: 28px;
+        }
+
+
+        .stat-card {
+
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 17px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.08);
+
+            transition: 0.25s;
+        }
+
+
+        .stat-card:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 7px 18px
+                rgba(0,0,0,0.14);
+        }
+
+
+        .stat-icon {
+
+            width: 55px;
+
+            height: 55px;
+
+            border-radius: 12px;
+
+            background: #e3f2fd;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 25px;
+        }
+
+
+        .stat-info h3 {
+
+            margin: 0;
+
+            color: #1976d2;
+
+            font-size: 28px;
+        }
+
+
+        .stat-info p {
+
+            margin: 5px 0 0;
+
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           TABLE CONTAINER
+        ===================================================== */
+
+        .table-container {
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.08);
+
+            overflow-x: auto;
+        }
+
+
+        .table-header {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+
+        .table-header h2 {
+
+            margin: 0;
+
+            font-size: 22px;
+
+            color: #333;
+        }
+
+
+        .count-badge {
+
+            background: #e3f2fd;
+
+            color: #1976d2;
+
+            padding: 8px 14px;
+
+            border-radius: 20px;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        table {
+
+            width: 100%;
+
+            border-collapse:
+                collapse;
+
+            min-width: 950px;
+        }
+
+
+        th {
+
+            background: #1976d2;
+
+            color: white;
+
+            padding: 14px;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+
+        td {
+
+            padding: 14px;
+
+            border-bottom:
+                1px solid #e0e0e0;
+
+            font-size: 14px;
+        }
+
+
+        tbody tr:hover {
+
+            background: #f7fbff;
+        }
+
+
+        /* =====================================================
+           BOOK
+        ===================================================== */
+
+        .book-title {
+
+            font-weight: bold;
+
+            color: #1976d2;
+
+            margin-bottom: 4px;
+        }
+
+
+        .book-isbn {
+
+            color: #777;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           USER
+        ===================================================== */
+
+        .user-name {
+
+            font-weight: bold;
+
+            color: #333;
+
+            margin-bottom: 4px;
+        }
+
+
+        .user-email {
+
+            color: #777;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           DATE
+        ===================================================== */
+
+        .date {
+
+            white-space: nowrap;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+
+        .status-active {
+
+            background: #e8f5e9;
+
+            color: #2e7d32;
+        }
+
+
+        .status-overdue {
+
+            background: #ffebee;
+
+            color: #c62828;
+        }
+
+
+        /* =====================================================
+           RETURN BUTTON
+        ===================================================== */
+
+        .return-button {
+
+            border: none;
+
+            padding: 9px 15px;
+
+            background: #2e7d32;
+
+            color: white;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+
+        .return-button:hover {
+
+            background: #1b5e20;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty {
+
+            text-align: center;
+
+            padding: 60px 20px;
+
+            color: #777;
+        }
+
+
+        .empty-icon {
+
+            font-size: 60px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .empty h3 {
+
+            margin: 0 0 10px;
+
+            font-size: 22px;
+
+            color: #555;
+        }
+
+
+        .empty p {
+
+            margin: 0;
+        }
+
+
+        /* =====================================================
+           INFORMATION
+        ===================================================== */
+
+        .info-box {
+
+            background: #e3f2fd;
+
+            border-left:
+                5px solid #1976d2;
+
+            padding: 18px 20px;
+
+            border-radius: 8px;
+
+            margin-top: 25px;
+
+            color: #444;
+        }
+
+
+        .info-box h3 {
+
+            margin: 0 0 8px;
+
+            color: #1976d2;
+        }
+
+
+        .info-box p {
+
+            margin: 6px 0;
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .navigation {
+
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin-top: 30px;
+        }
+
+
+        .navigation a {
+
+            display: inline-block;
+
+            padding: 11px 18px;
+
+            background: #1976d2;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 7px;
+
+            font-weight: bold;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .navigation a:hover {
+
+            background: #125ca3;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        .navigation .dashboard {
+
+            background: #555;
+        }
+
+
+        .navigation .dashboard:hover {
+
+            background: #333;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            margin-top: 40px;
+
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            header {
+
+                flex-direction: column;
+
+                text-align: center;
+
+                gap: 15px;
+
+                padding: 25px 20px;
+            }
+
+
+            .logo-section {
+
+                flex-direction: column;
+            }
+
+
+            .container {
+
+                width: 94%;
+
+                margin: 25px auto;
+            }
+
+
+            .table-container {
+
+                padding: 15px;
+            }
+
+
+            .table-header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <div class="logo-section">
+
+        <div class="logo">
+            📚
+        </div>
+
+        <div>
+
+            <h1>
+                Digital Library
+            </h1>
+
+            <p>
+                Administration Panel
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-badge">
+
+        👨‍💼 ADMIN
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<div class="container">
+
+
+    <!-- =================================================
+         TITLE
+    ================================================= -->
+
+    <div class="page-title">
+
+        <h2>
+            📖 Issued Books Management
+        </h2>
+
+        <p>
+            View currently issued books,
+            borrowers, due dates and return books.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         STATISTICS
+    ================================================= -->
+
+    <div class="stats">
+
+
+        <!-- ISSUED -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📖
+            </div>
+
+            <div class="stat-info">
+
+                <h3
+                    th:text="${issuedCount}">
+                    0
+                </h3>
+
+                <p>
+                    Currently Issued
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- OVERDUE -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ⏰
+            </div>
+
+            <div class="stat-info">
+
+                <h3
+                    th:text="${overdueCount}">
+                    0
+                </h3>
+
+                <p>
+                    Overdue Books
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- BORROW DAYS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📅
+            </div>
+
+            <div class="stat-info">
+
+                <h3
+                    th:text="${borrowDays}">
+                    14
+                </h3>
+
+                <p>
+                    Allowed Borrow Days
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- TODAY -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🗓️
+            </div>
+
+            <div class="stat-info">
+
+                <h3
+                    th:text="${today}">
+                    2026-01-01
+                </h3>
+
+                <p>
+                    Today's Date
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ISSUED BOOK TABLE
+    ================================================= -->
+
+    <div class="table-container">
+
+
+        <div class="table-header">
+
+            <h2>
+                📋 Issued Book Records
+            </h2>
+
+            <div
+                class="count-badge"
+                th:text="${issuedCount + ' Books'}">
+
+                0 Books
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             BOOKS EXIST
+        ================================================= -->
+
+        <div
+            th:if="${issuedBooks != null and !issuedBooks.isEmpty()}">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Book
+                    </th>
+
+                    <th>
+                        Borrower
+                    </th>
+
+                    <th>
+                        Borrow Date
+                    </th>
+
+                    <th>
+                        Due Date
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                <tr
+                    th:each="record : ${issuedBooks}">
+
+
+                    <!-- ID -->
+
+                    <td
+                        th:text="${record.borrow.id}">
+
+                        1
+
+                    </td>
+
+
+                    <!-- BOOK -->
+
+                    <td>
+
+                        <div
+                            class="book-title"
+                            th:if="${record.borrow.book != null}"
+                            th:text="${record.borrow.book.title}">
+
+                            Book Title
+
+                        </div>
+
+                        <div
+                            class="book-isbn"
+                            th:if="${record.borrow.book != null}"
+                            th:text="'ISBN: ' + ${record.borrow.book.isbn}">
+
+                            ISBN
+
+                        </div>
+
+                        <span
+                            th:if="${record.borrow.book == null}">
+
+                            Unknown Book
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- USER -->
+
+                    <td>
+
+                        <div
+                            class="user-name"
+                            th:if="${record.borrow.user != null}"
+                            th:text="${record.borrow.user.username}">
+
+                            Username
+
+                        </div>
+
+                        <div
+                            class="user-email"
+                            th:if="${record.borrow.user != null}"
+                            th:text="${record.borrow.user.email}">
+
+                            email@example.com
+
+                        </div>
+
+                        <span
+                            th:if="${record.borrow.user == null}">
+
+                            Unknown User
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- BORROW DATE -->
+
+                    <td class="date"
+                        th:text="${record.borrow.borrowDate}">
+
+                        2026-01-01
+
+                    </td>
+
+
+                    <!-- DUE DATE -->
+
+                    <td class="date"
+                        th:text="${record.dueDate}">
+
+                        2026-01-15
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        <!-- OVERDUE -->
+
+                        <span
+                            th:if="${record.overdue}"
+                            class="status status-overdue">
+
+                            🔴 OVERDUE
+
+                        </span>
+
+
+                        <!-- ACTIVE -->
+
+                        <span
+                            th:if="${!record.overdue}"
+                            class="status status-active">
+
+                            🟢 ON TIME
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- RETURN -->
+
+                    <td>
+
+                        <form
+                            th:action="@{'/admin/issued-books/return/' + ${record.borrow.id}}"
+                            method="post"
+                            onsubmit="return confirm('Are you sure you want to return this book?');">
+
+                            <button
+                                type="submit"
+                                class="return-button">
+
+                                ↩️ Return Book
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             NO ISSUED BOOKS
+        ================================================= -->
+
+        <div
+            class="empty"
+            th:if="${issuedBooks == null or issuedBooks.isEmpty()}">
+
+            <div class="empty-icon">
+                📚
+            </div>
+
+            <h3>
+                No Books Currently Issued
+            </h3>
+
+            <p>
+                There are currently no active book borrowings.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         INFORMATION
+    ================================================= -->
+
+    <div class="info-box">
+
+        <h3>
+            ℹ️ Borrowing Policy
+        </h3>
+
+        <p>
+            📅 Books can be borrowed for
+            <strong th:text="${borrowDays}">
+                14
+            </strong>
+            days.
+        </p>
+
+        <p>
+            ⏰ Books returned after the due date
+            are marked as
+            <strong>OVERDUE</strong>.
+        </p>
+
+        <p>
+            ↩️ Returning a book automatically
+            increases its available quantity.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         NAVIGATION
+    ================================================= -->
+
+    <div class="navigation">
+
+        <a
+            href="/admin"
+            class="dashboard">
+
+            ← Admin Dashboard
+
+        </a>
+
+
+        <a href="/admin/books">
+
+            📚 Manage Books
+
+        </a>
+
+
+        <a href="/admin/users">
+
+            👥 Users
+
+        </a>
+
+
+        <a href="/admin/fines">
+
+            💰 Fines
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <p>
+        © 2026 Digital Library Management System
+    </p>
+
+    <p>
+        Admin Panel • Issued Books Management
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>
