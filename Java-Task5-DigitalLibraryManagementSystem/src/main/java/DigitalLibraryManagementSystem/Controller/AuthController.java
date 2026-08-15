@@ -18,18 +18,18 @@ public class AuthController {
         this.userRepository = userRepository;
     }
 
-    // ==============================
+    // =========================
     // LOGIN PAGE
-    // ==============================
+    // =========================
 
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
 
-    // ==============================
+    // =========================
     // LOGIN
-    // ==============================
+    // =========================
 
     @PostMapping("/login")
     public String login(
@@ -42,58 +42,52 @@ public class AuthController {
                 .findByUsername(username)
                 .orElse(null);
 
-        // Check username and password
-        if (user != null &&
-                user.getPassword().equals(password)) {
-
-            // Check selected role with database role
-            if (!role.equalsIgnoreCase(user.getRole())) {
-
-                model.addAttribute(
-                        "error",
-                        "Incorrect role selected for this account!"
-                );
-
-                return "login";
-            }
-
-            // ==============================
-            // ADMIN
-            // ==============================
-
-            if ("ADMIN".equalsIgnoreCase(user.getRole())) {
-
-                return "redirect:/admin";
-            }
-
-            // ==============================
-            // USER
-            // ==============================
-
-            return "redirect:/dashboard?username=" + username;
+        if (user == null) {
+            model.addAttribute(
+                    "error",
+                    "Username not found!"
+            );
+            return "login";
         }
 
-        // Invalid login
-        model.addAttribute(
-                "error",
-                "Invalid username or password!"
-        );
+        if (!user.getPassword().equals(password)) {
+            model.addAttribute(
+                    "error",
+                    "Incorrect password!"
+            );
+            return "login";
+        }
 
-        return "login";
+        if (!role.equalsIgnoreCase(user.getRole())) {
+            model.addAttribute(
+                    "error",
+                    "Incorrect role selected!"
+            );
+            return "login";
+        }
+
+        // ADMIN LOGIN
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+            return "redirect:/admin";
+        }
+
+        // USER LOGIN
+        return "redirect:/dashboard?username="
+                + username;
     }
 
-    // ==============================
+    // =========================
     // REGISTER PAGE
-    // ==============================
+    // =========================
 
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
 
-    // ==============================
+    // =========================
     // REGISTER
-    // ==============================
+    // =========================
 
     @PostMapping("/register")
     public String register(
@@ -120,7 +114,7 @@ public class AuthController {
         user.setPassword(password);
         user.setEmail(email);
 
-        // Every newly registered account is a USER
+        // New registrations are normal users
         user.setRole("USER");
 
         userRepository.save(user);
