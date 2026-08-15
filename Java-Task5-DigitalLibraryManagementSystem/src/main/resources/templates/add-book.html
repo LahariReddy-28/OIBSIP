@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Add Book | Digital Library</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #eef5ff, #f8fbff);
+            color: #263238;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: linear-gradient(135deg, #1565c0, #1976d2);
+            color: white;
+            padding: 22px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .admin-label {
+            background: rgba(255,255,255,0.18);
+            padding: 9px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 92%;
+            max-width: 700px;
+            margin: 45px auto;
+        }
+
+        /* ================= FORM CARD ================= */
+
+        .form-card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 30px rgba(0,0,0,0.10);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .book-icon {
+            width: 65px;
+            height: 65px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #e3f2fd;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 32px;
+        }
+
+        .form-header h2 {
+            margin: 0;
+            color: #1565c0;
+            font-size: 28px;
+        }
+
+        .form-header p {
+            margin-top: 8px;
+            color: #78909c;
+        }
+
+        /* ================= ERROR ================= */
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+
+            border-left: 5px solid #e53935;
+
+            padding: 13px 15px;
+
+            border-radius: 8px;
+
+            margin-bottom: 22px;
+
+            font-size: 14px;
+        }
+
+        /* ================= FORM ================= */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+
+            color: #37474f;
+        }
+
+        .required {
+            color: #e53935;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #cfd8dc;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #1976d2;
+
+            box-shadow:
+                0 0 0 3px rgba(25,118,210,0.12);
+        }
+
+        input::placeholder {
+            color: #9e9e9e;
+        }
+
+        .hint {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #90a4ae;
+
+            font-size: 12px;
+        }
+
+        /* ================= TWO COLUMNS ================= */
+
+        .row {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .button-group {
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            text-align: center;
+
+            text-decoration: none;
+        }
+
+        .add-btn {
+            background: linear-gradient(
+                135deg,
+                #1976d2,
+                #1565c0
+            );
+
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #0d47a1;
+        }
+
+        .cancel-btn {
+            background: #eceff1;
+
+            color: #455a64;
+        }
+
+        .cancel-btn:hover {
+            background: #cfd8dc;
+        }
+
+        /* ================= INFO ================= */
+
+        .info-box {
+            margin-top: 25px;
+
+            padding: 15px;
+
+            background: #f1f8ff;
+
+            border-radius: 8px;
+
+            border-left: 4px solid #1976d2;
+
+            color: #546e7a;
+
+            font-size: 13px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            text-align: center;
+
+            margin: 25px 0 35px;
+
+            color: #90a4ae;
+
+            font-size: 13px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 650px) {
+
+            header {
+                padding: 18px 20px;
+
+                flex-direction: column;
+
+                gap: 10px;
+
+                text-align: center;
+            }
+
+            header h1 {
+                font-size: 21px;
+            }
+
+            .container {
+                width: 94%;
+
+                margin: 25px auto;
+            }
+
+            .form-card {
+                padding: 25px 20px;
+            }
+
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <h1>
+        📚 Digital Library
+    </h1>
+
+    <div class="admin-label">
+        🔐 Administrator
+    </div>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="container">
+
+
+    <div class="form-card">
+
+
+        <!-- FORM HEADER -->
+
+        <div class="form-header">
+
+            <div class="book-icon">
+                📖
+            </div>
+
+            <h2>
+                Add New Book
+            </h2>
+
+            <p>
+                Add a new book to the digital library catalogue.
+            </p>
+
+        </div>
+
+
+        <!-- ERROR -->
+
+        <div
+            class="error"
+            th:if="${error}"
+            th:text="${error}">
+
+            Error message
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form
+            th:action="@{/admin/books/add}"
+            method="post">
+
+
+            <!-- TITLE -->
+
+            <div class="form-group">
+
+                <label>
+                    Book Title
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Enter book title"
+                    maxlength="150"
+                    required>
+
+            </div>
+
+
+            <!-- AUTHOR -->
+
+            <div class="form-group">
+
+                <label>
+                    Author
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="author"
+                    placeholder="Enter author name"
+                    maxlength="100"
+                    required>
+
+            </div>
+
+
+            <!-- ISBN + CATEGORY -->
+
+            <div class="row">
+
+
+                <div class="form-group">
+
+                    <label>
+                        ISBN
+                        <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="isbn"
+                        placeholder="Enter ISBN"
+                        maxlength="30"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Category
+                        <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="category"
+                        placeholder="e.g. Programming"
+                        maxlength="60"
+                        required>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- QUANTITY -->
+
+            <div class="form-group">
+
+                <label>
+                    Quantity
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    max="10000"
+                    placeholder="Enter number of copies"
+                    required>
+
+                <span class="hint">
+                    Number of copies available in the library.
+                </span>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="button-group">
+
+                <a
+                    href="/admin/books"
+                    class="btn cancel-btn">
+
+                    ← Cancel
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn add-btn">
+
+                    ➕ Add Book
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+        <!-- INFO -->
+
+        <div class="info-box">
+
+            💡 <strong>Note:</strong>
+            Newly added books will initially have all
+            copies marked as available.
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<footer>
+
+    Digital Library Management System © 2026
+
+</footer>
+
+
+</body>
+
+</html>
